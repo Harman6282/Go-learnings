@@ -1,0 +1,8 @@
+module github.com/Harman6282/go-crud
+
+go 1.25.3
+
+require (
+	github.com/gorilla/mux v1.8.1 // indirect
+	github.com/lib/pq v1.10.9 // indirect
+)
