@@ -28,6 +28,11 @@ func Createblog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if blog.Title == "" {
+		response.WriteJson(w, http.StatusBadRequest, "Enter title field")
+		return
+	}
+
 	response.WriteJson(w, http.StatusOK, blog)
 	fmt.Println(blog)
 

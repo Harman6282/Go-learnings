@@ -6,18 +6,18 @@ import (
 	"net/http"
 
 	"github.com/Harman6282/blog-go/internal/handlers"
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi/v5"
 )
 
 func main() {
 
-	r := mux.NewRouter()
-	r.HandleFunc("/", handlers.Greet).Methods("GET")
-	r.HandleFunc("/blogs", handlers.GetAllblogs).Methods("GET")
-	r.HandleFunc("/blogs", handlers.Createblog).Methods("POST")
-	r.HandleFunc("/blogs/{id}", handlers.GetblogById).Methods("GET")
-	r.HandleFunc("/blogs/{id}", handlers.Updateblog).Methods("PUT")
-	r.HandleFunc("/blogs/{id}", handlers.Deleteblog).Methods("DELETE")
+	r := chi.NewRouter()
+	r.Get("/", handlers.Greet)
+	r.Get("/blogs", handlers.GetAllblogs)
+	r.Post("/blogs", handlers.Createblog)
+	r.Get("/blogs/{id}", handlers.GetblogById)
+	r.Put("/blogs/{id}", handlers.Updateblog)
+	r.Delete("/blogs/{id}", handlers.Deleteblog)
 
 	fmt.Println("Server started at Port 3000")
 	err := http.ListenAndServe(":3000", r)
