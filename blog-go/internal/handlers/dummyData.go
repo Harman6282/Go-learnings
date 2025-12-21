@@ -1,6 +1,6 @@
 package handlers
 
-import "github.com/Harman6282/blog-go/types"
+import "github.com/Harman6282/blog-go/internal/types"
 
 var Blogs = []types.Blog{
 	{Id: "1", Title: "Getting Started with Go", Content: "This blog explains how to start learning Golang from scratch."},
