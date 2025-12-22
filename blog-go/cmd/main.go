@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/Harman6282/blog-go/internal/database"
 	"github.com/Harman6282/blog-go/internal/handlers"
 	"github.com/go-chi/chi/v5"
 )
@@ -21,6 +22,7 @@ func main() {
 
 	fmt.Println("Server started at Port 3000")
 	err := http.ListenAndServe(":3000", r)
+	database.ConnectDB()
 
 	if err != nil {
 		log.Fatal("Error on starting server")

@@ -7,6 +7,7 @@ import (
 
 	"github.com/Harman6282/blog-go/internal/types"
 	"github.com/Harman6282/blog-go/internal/utils/response"
+	"github.com/go-chi/chi/v5"
 )
 
 func Greet(w http.ResponseWriter, r *http.Request) {
@@ -39,6 +40,10 @@ func Createblog(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetblogById(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+
+	fmt.Println("id is: ", id)
+
 
 }
 
