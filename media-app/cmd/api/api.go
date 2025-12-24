@@ -5,12 +5,14 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/Harman6282/medial-app/internal/store"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 )
 
 type application struct {
 	config config
+	store store.Storage
 }
 
 type config struct {
@@ -43,6 +45,7 @@ func (app *application) run(mux http.Handler) error {
 	}
 
 	log.Printf("server has started at %s ", app.config.addr)
+
 
 	return srv.ListenAndServe()
 }

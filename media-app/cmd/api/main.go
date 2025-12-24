@@ -4,19 +4,21 @@ import (
 	"log"
 
 	"github.com/Harman6282/medial-app/internal/env"
-) 
+	"github.com/Harman6282/medial-app/internal/store"
+)
 
-
-func main(){
+func main() {
 	cfg := config{
 		addr: env.GetString("ADDR", ":8080"),
 	}
-	
+	store := store.NewStorage(nil)
+
 	app := &application{
 		config: cfg,
-	}	
+		store:  store,
+	}
 
-    mux := app.mount()
+	mux := app.mount()
 
 	log.Fatal(app.run(mux))
 }
