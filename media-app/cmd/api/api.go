@@ -12,11 +12,19 @@ import (
 
 type application struct {
 	config config
-	store store.Storage
+	store  store.Storage
 }
 
 type config struct {
 	addr string
+	db     dbconfig
+}
+
+type dbconfig struct {
+	addr         string
+	maxOpenConns int
+	maxIdleConns int
+	maxIdleTime  string
 }
 
 func (app *application) mount() http.Handler {
@@ -45,7 +53,6 @@ func (app *application) run(mux http.Handler) error {
 	}
 
 	log.Printf("server has started at %s ", app.config.addr)
-
 
 	return srv.ListenAndServe()
 }
