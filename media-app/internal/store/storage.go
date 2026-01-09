@@ -5,14 +5,17 @@ import (
 	"database/sql"
 )
 
-type Storage struct {
-	Posts interface {
-		Create(context.Context, *Post) error
-	}
+type Posts interface {
+	Create(context.Context, *Post) error
+}
 
-	Users interface {
-		Create(context.Context, *User) error
-	}
+type Users interface {
+	Create(context.Context, *User) error
+}
+
+type Storage struct {
+	Posts
+	Users
 }
 
 func NewStorage(db *sql.DB) Storage {
