@@ -18,6 +18,7 @@ type application struct {
 type config struct {
 	addr string
 	db     dbconfig
+	env string
 }
 
 type dbconfig struct {
@@ -51,6 +52,8 @@ func (app *application) run(mux http.Handler) error {
 		ReadTimeout:  time.Second * 10,
 		IdleTimeout:  time.Minute,
 	}
+
+	log.Printf("ADDR raw value: %#v", app.config.addr)
 
 	log.Printf("server has started at %s ", app.config.addr)
 

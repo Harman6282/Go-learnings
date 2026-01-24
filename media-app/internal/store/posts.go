@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"database/sql"
+	"time"
 
 	"github.com/lib/pq"
 )
@@ -22,6 +23,11 @@ type PostStore struct {
 }
 
 func (s *PostStore) Create(ctx context.Context, post *Post) error {
+
+	ctx,cancel := context.WithTimeout(context.Background(), 3 * time.Second)
+	defer cancel()
+
+
 	query := `INSERT INTO posts (content, title, user_id, tags) 
 	VALUES ($1, $2, $3, $4) RETURNING id, created_at, updated_at`
 
