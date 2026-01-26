@@ -3,9 +3,16 @@ package store
 import (
 	"context"
 	"database/sql"
+	"errors"
+)
+
+
+var (
+	ErrNotFound = errors.New("Record not found")
 )
 
 type Posts interface {
+	GetByID(context.Context, int64) (*Post, error)
 	Create(context.Context, *Post) error
 }
 
