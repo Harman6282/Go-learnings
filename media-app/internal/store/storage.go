@@ -4,11 +4,13 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"time"
 )
 
 
 var (
 	ErrNotFound = errors.New("Record not found")
+	QueryTimeoutDuration = time.Second * 5
 )
 
 type Posts interface {
@@ -23,6 +25,7 @@ type Users interface {
 }
 
 type Comments interface {
+	Create(context.Context, *Comment) error
 	GetByPostID(context.Context, int64) ([]Comment, error)
 }
 
