@@ -11,6 +11,13 @@ func (app *application) internalServerError(w http.ResponseWriter, r *http.Reque
 	writeJSONError(w, http.StatusInternalServerError, "the server encountered a problem")
 }
 
+func (app *application) conflictResponse(w http.ResponseWriter, r *http.Request, err error) {
+	log.Printf( "Conflict error: %s path: %s error: %s",r.Method, r.URL.Path, err )
+
+	writeJSONError(w, http.StatusConflict, err.Error())
+} 
+
+
 func (app *application) badRequestError(w http.ResponseWriter, r *http.Request, err error) {
 	log.Printf( "bad request error: %s path: %s error: %s",r.Method, r.URL.Path, err )
 
