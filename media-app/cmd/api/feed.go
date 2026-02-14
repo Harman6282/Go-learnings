@@ -1,11 +1,33 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/Harman6282/medial-app/internal/store"
+)
 
 func (app *application) getUserFeedHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-    feed, err := app.store.Posts.GetUserFeed(ctx, int64(42))
+	//pagination , filters, sort
+	fq := store.PaginatedFeedQuery{
+		Limit: 20,
+		Offset: 0,
+		Sort: "desc",
+	}
+
+	fq, err := fq.Parse(r) 
+	if err != nil {
+		app.badRequestError(w, r, err)
+		return 
+	}
+
+	if err := validate.Struct(fq); err != nil{
+		app.badRequestError(w, r, err)
+		return 
+	}
+
+    feed, err := app.store.Posts.GetUserFeed(ctx, int64(42), fq)
 	if err != nil {
 		app.internalServerError(w, r, err)
 		return
@@ -15,6 +37,4 @@ func (app *application) getUserFeedHandler(w http.ResponseWriter, r *http.Reques
 		app.internalServerError(w, r, err)
 	}
 	
-
-
 }
