@@ -79,8 +79,6 @@ func (s *PostStore) GetUserFeed(ctx context.Context, userID int64) ([]PostWithMe
 
 	return feed, nil
 
-
-
 }
 
 func (s *PostStore) Create(ctx context.Context, post *Post) error {
