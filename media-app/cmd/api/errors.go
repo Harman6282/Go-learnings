@@ -1,30 +1,29 @@
 package main
 
 import (
-	"log"
 	"net/http"
 )
 
 func (app *application) internalServerError(w http.ResponseWriter, r *http.Request, err error) {
-	log.Printf("internal server error: %s path: %s error: %s", r.Method, r.URL.Path, err)
+	app.logger.Errorw("internal server error", "method", r.Method, "path", r.URL.Path, "error", err.Error())
 
 	writeJSONError(w, http.StatusInternalServerError, "the server encountered a problem")
 }
 
 func (app *application) conflictResponse(w http.ResponseWriter, r *http.Request, err error) {
-	log.Printf("Conflict error: %s path: %s error: %s", r.Method, r.URL.Path, err)
+	app.logger.Errorw("conflict response", "method", r.Method, "path", r.URL.Path, "error", err.Error())
 
 	writeJSONError(w, http.StatusConflict, err.Error())
 }
 
 func (app *application) badRequestError(w http.ResponseWriter, r *http.Request, err error) {
-	log.Printf("bad request error: %s path: %s error: %s", r.Method, r.URL.Path, err)
+	app.logger.Warnf("bad request", "method", r.Method, "path", r.URL.Path, "error", err.Error())
 
 	writeJSONError(w, http.StatusBadRequest, err.Error())
 }
 
 func (app *application) notFoundResponse(w http.ResponseWriter, r *http.Request, err error) {
-	log.Printf("bad request error: %s path: %s error: %s", r.Method, r.URL.Path, err)
+	app.logger.Errorw("not found error", "method", r.Method, "path", r.URL.Path, "error", err.Error())
 
 	writeJSONError(w, http.StatusNotFound, "not found")
 }
