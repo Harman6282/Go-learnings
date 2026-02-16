@@ -7,11 +7,10 @@ import (
 	"time"
 )
 
-
 var (
-	ErrNotFound = errors.New("Record not found")
+	ErrNotFound          = errors.New("Record not found")
 	QueryTimeoutDuration = time.Second * 5
-	ErrConflict = errors.New("Resource already exists")
+	ErrConflict          = errors.New("Resource already exists")
 )
 
 type Posts interface {
@@ -25,7 +24,6 @@ type Posts interface {
 type Users interface {
 	Create(context.Context, *User) error
 	GetByID(context.Context, int64) (*User, error)
-	
 }
 
 type Comments interface {
@@ -47,9 +45,9 @@ type Storage struct {
 
 func NewStorage(db *sql.DB) Storage {
 	return Storage{
-		Posts: &PostStore{db},
-		Users: &UserStore{db},
-		Comments: &CommentStore{db},
+		Posts:     &PostStore{db},
+		Users:     &UserStore{db},
+		Comments:  &CommentStore{db},
 		Followers: &FollowerStore{db},
 	}
 }

@@ -64,14 +64,12 @@ func (s *UserStore) GetByID(ctx context.Context, userID int64) (*User, error) {
 	if err != nil {
 		switch err {
 		case sql.ErrNoRows:
-			return nil , ErrNotFound
-		
-		default: 
-			return nil ,err 
+			return nil, ErrNotFound
+
+		default:
+			return nil, err
 		}
 	}
 
 	return user, nil
 }
-
-

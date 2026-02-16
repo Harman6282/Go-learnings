@@ -41,7 +41,7 @@ func (s *PostStore) GetUserFeed(ctx context.Context, userID int64, fq PaginatedF
 		JOIN followers f ON f.follower_id = p.user_id OR p.user_id = $1
 		WHERE f.user_id = $1 AND (p.title ILIKE '%' || $4 || '%' OR p.content ILIKE '%' || $4 || '% ) and (p.tags @> $5 OR $5 = '{}')
 		GROUP BY p.id, u.username
-		ORDER BY p.created_at ` + fq.Sort +`
+		ORDER BY p.created_at ` + fq.Sort + `
 		LIMIT $2 OFFSET $3
 	`
 

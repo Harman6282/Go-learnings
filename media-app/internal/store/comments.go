@@ -7,12 +7,12 @@ import (
 )
 
 type Comment struct {
-	ID        int64 `json:"id"`
-	PostID    int64 `json:"post_id"`
-	UserID    int64 `json:"user_id"`
-	Content   string `json:"content"`
+	ID        int64     `json:"id"`
+	PostID    int64     `json:"post_id"`
+	UserID    int64     `json:"user_id"`
+	Content   string    `json:"content"`
 	CreatedAt time.Time `json:"created_at"`
-	User      User  `json:"user"`
+	User      User      `json:"user"`
 }
 
 type CommentStore struct {
@@ -44,7 +44,7 @@ func (s *CommentStore) GetByPostID(ctx context.Context, postID int64) ([]Comment
 		comments = append(comments, c)
 	}
 
-	return comments , nil
+	return comments, nil
 }
 
 func (s *CommentStore) Create(ctx context.Context, comment *Comment) error {
@@ -58,12 +58,11 @@ func (s *CommentStore) Create(ctx context.Context, comment *Comment) error {
 	defer cancel()
 
 	err := s.db.QueryRowContext(
-		ctx, 
+		ctx,
 		query,
 		comment.PostID,
 		comment.UserID,
 		comment.Content,
-	     
 	).Scan(
 		&comment.ID,
 		&comment.CreatedAt,
