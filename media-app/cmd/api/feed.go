@@ -22,7 +22,7 @@ func (app *application) getUserFeedHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	if err := validate.Struct(fq); err != nil {
+	if err := Validate.Struct(fq); err != nil {
 		app.badRequestError(w, r, err)
 		return
 	}
