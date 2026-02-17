@@ -1,9 +1,12 @@
 package main
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"net/http"
 
 	"github.com/Harman6282/medial-app/internal/store"
+	"github.com/google/uuid"
 )
 
 type RegisterUserPayload struct {
@@ -26,21 +29,36 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 
 	user := &store.User{
 		Username: payload.Username,
-		Email: payload.Email,
+		Email:    payload.Email,
 	}
 
 	if err := user.Password.Set(payload.Password); err != nil {
 		app.internalServerError(w, r, err)
-		return 
+		return
 	}
 
-	// store the user
-	
+	ctx := r.Context()
 
+	plainToken := uuid.New().String()
 
+	hash := sha256.Sum256([]byte(plainToken))
+	hashToken := hex.EncodeToString(hash[:])
 
+	err := app.store.Users.CreateAndInvite(ctx, user, hashToken, app.config.mail.exp)
+	if err != nil {
+		switch err {
+		case store.ErrDuplicateEmail:
+			app.badRequestError(w, r, err)
 
+		case store.ErrDuplicateUsername:
+			app.badRequestError(w, r, err)
 
+		default:
+			app.internalServerError(w, r, err)
+		}
+
+		return
+	}
 
 	if err := app.jsonResponse(w, http.StatusCreated, nil); err != nil {
 		app.internalServerError(w, r, err)
