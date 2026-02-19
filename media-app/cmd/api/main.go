@@ -5,6 +5,7 @@ import (
 
 	"github.com/Harman6282/medial-app/internal/db"
 	"github.com/Harman6282/medial-app/internal/env"
+	"github.com/Harman6282/medial-app/internal/mailer"
 	"github.com/Harman6282/medial-app/internal/store"
 	"go.uber.org/zap"
 )
@@ -29,6 +30,7 @@ const version = "0.0.1"
 func main() {
 	cfg := config{
 		addr:   env.GetString("ADDR", ":8080"),
+		frontendURL: env.GetString("FRONTEND_URL", "http://localhost:3000"),
 		apiURL: env.GetString("EXTERNAL_URL", "localhost:8080"),
 		db: dbconfig{
 			addr:         env.GetString("DB_DSN", "postgres://admin:adminpassword@localhost/social?sslmode=disable"),
@@ -39,6 +41,10 @@ func main() {
 		env: env.GetString("ENV", "development"),
 		mail: mailConfig{
 			exp: time.Hour * 24 * 3,
+			fromEmail: env.GetString("FROM_EMAIL", ""),
+			sendGrid: sendGridConfig{
+				apiKey: env.GetString("SENDGRID_API_KEY", ""),
+			},
 		},
 	}
 
@@ -64,10 +70,13 @@ func main() {
 
 	store := store.NewStorage(db)
 
+	mailer := mailer.NewSendgrid(cfg.mail.sendGrid.apiKey, cfg.mail.fromEmail)
+
 	app := &application{
 		config: cfg,
 		store:  store,
 		logger: logger,
+		mailer: mailer,
 	}
 
 	mux := app.mount()

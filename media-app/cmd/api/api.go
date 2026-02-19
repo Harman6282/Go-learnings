@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/Harman6282/medial-app/docs"
+	"github.com/Harman6282/medial-app/internal/mailer"
 	"github.com/Harman6282/medial-app/internal/store"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -17,6 +18,7 @@ type application struct {
 	config config
 	store  store.Storage
 	logger *zap.SugaredLogger
+	mailer mailer.Client
 }
 
 type config struct {
@@ -25,10 +27,18 @@ type config struct {
 	env    string
 	apiURL string
 	mail   mailConfig
+	frontendURL string
+
 }
 
 type mailConfig struct {
 	exp time.Duration
+	fromEmail string
+	sendGrid sendGridConfig
+}
+
+type sendGridConfig struct {
+	apiKey string
 }
 
 type dbconfig struct {
