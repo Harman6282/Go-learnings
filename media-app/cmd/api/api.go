@@ -24,12 +24,11 @@ type config struct {
 	db     dbconfig
 	env    string
 	apiURL string
-	mail  mailConfig
+	mail   mailConfig
 }
 
 type mailConfig struct {
 	exp time.Duration
-
 }
 
 type dbconfig struct {
@@ -66,6 +65,9 @@ func (app *application) mount() http.Handler {
 		})
 
 		r.Route("/users", func(r chi.Router) {
+
+			r.Put("/activate/{token}", app.activateUserHandler)
+
 			r.Route("/{userID}", func(r chi.Router) {
 				r.Use(app.userContextMiddleware)
 
@@ -81,9 +83,8 @@ func (app *application) mount() http.Handler {
 			})
 
 			// public routes
-			r.Route("/authentication",func(r chi.Router) {
-
-			r.Post("/user", app.registerUserHandler)
+			r.Route("/authentication", func(r chi.Router) {
+				r.Post("/user", app.registerUserHandler)
 			})
 
 		})
@@ -108,7 +109,7 @@ func (app *application) run(mux http.Handler) error {
 		IdleTimeout:  time.Minute,
 	}
 
-	app.logger.Infow("server has started at %s ", app.config.addr, )
+	app.logger.Infow("server has started at %s ", app.config.addr)
 
 	return srv.ListenAndServe()
 }

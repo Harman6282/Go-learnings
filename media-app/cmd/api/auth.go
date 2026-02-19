@@ -15,9 +15,26 @@ type RegisterUserPayload struct {
 	Password string `json:"password" validate:"required,min=3,max=72"`
 }
 
+type UserWithToken struct {
+	*store.User
+	Token string `json:"token"`
+}
+
+// registerUserHandler godoc
+//
+//	@Summary		Registers a user
+//	@Description	Registers a user
+//	@Tags			authentication
+//	@Accept			json
+//	@Produce		json
+//	@Param			payload	body		RegisterUserPayload	true	"User credentials"
+//	@Success		201		{object}	UserWithToken		"User registered"
+//	@Failure		400		{object}	error
+//	@Failure		500		{object}	error
+//	@Router			/authentication/user [post]
 func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Request) {
 	var payload RegisterUserPayload
-	if err := readJSON(w, r, payload); err != nil {
+	if err := readJSON(w, r, &payload); err != nil {
 		app.badRequestError(w, r, err)
 		return
 	}
@@ -32,6 +49,7 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 		Email:    payload.Email,
 	}
 
+	// hash the user password
 	if err := user.Password.Set(payload.Password); err != nil {
 		app.internalServerError(w, r, err)
 		return
@@ -41,6 +59,7 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 
 	plainToken := uuid.New().String()
 
+	// hash the token for storage but keep the plain token for email
 	hash := sha256.Sum256([]byte(plainToken))
 	hashToken := hex.EncodeToString(hash[:])
 
@@ -49,19 +68,20 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 		switch err {
 		case store.ErrDuplicateEmail:
 			app.badRequestError(w, r, err)
-
 		case store.ErrDuplicateUsername:
 			app.badRequestError(w, r, err)
-
 		default:
 			app.internalServerError(w, r, err)
 		}
-
 		return
 	}
 
-	if err := app.jsonResponse(w, http.StatusCreated, nil); err != nil {
-		app.internalServerError(w, r, err)
+	userWithToken := UserWithToken{
+		User:  user,
+		Token: plainToken,
 	}
 
+	if err := app.jsonResponse(w, http.StatusCreated, userWithToken); err != nil {
+		app.internalServerError(w, r, err)
+	}
 }
