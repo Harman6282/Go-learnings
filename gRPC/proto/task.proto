@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package  task;
+
+option go_package = "grpc-demo/pb";
+
+message CreateTaskRequest {
+  string title = 1;
+  string description = 2;
+}
+
+message CreateTaskResponse {
+    string id = 1;
+    string title = 2;
+    string description = 3;
+}
+
+
+message ListTaksRequest {}
+
+message Task {
+    string id = 1;
+    string title = 2;
+    string description = 3;
+}
+
+// Service definition
+service TaskManager {
+    // unary: create single task
+  rpc CreateTask(CreateTaskRequest) returns (CreateTaskResponse);
+  
+  // server streaming: list all tasks as a stream
+  rpc ListTasks(ListTaksRequest) returns (stream Task);
+
+
+}

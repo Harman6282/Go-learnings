@@ -7,38 +7,15 @@ import (
 )
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/hello" {
-		http.Error(w, "404 not found", http.StatusNotFound)
-		return
-	}
-
-	if r.Method != "GET" {
-		http.Error(w, "method is not supported", http.StatusNotFound)
-		return
-	}
-
-	fmt.Fprintf(w, "hello sir")
+	w.Write([]byte("hello sir"))
 }
-
-func formHandler(w http.ResponseWriter, r *http.Request) {
-	if err := r.ParseForm(); err != nil {
-		fmt.Fprintf(w, "ParseForm() err: %v", err)
-		return
-	}
-
-	fmt.Fprint(w, "POST request successful")
-	name := r.FormValue("name")
-	password := r.FormValue("password")
-	fmt.Fprintf(w, "Name = ", name)
-	fmt.Fprintf(w, "Password = ", password)
-
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Welcome to golang app on AWS"))
 }
 
 func main() {
-	fileServer := http.FileServer(http.Dir("./static"))
 
-	http.Handle("/", fileServer)
-	http.HandleFunc("/form", formHandler)
+	http.HandleFunc("/", homeHandler)
 	http.HandleFunc("/hello", helloHandler)
 
 	fmt.Printf("Starting server at port 8080")

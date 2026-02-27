@@ -28,8 +28,17 @@ type config struct {
 	apiURL string
 	mail   mailConfig
 	frontendURL string
-
+	auth authConfig
 }
+
+type authConfig struct {
+	basic basicConfig
+}
+
+type basicConfig struct {
+	user string
+	pass string
+}	
 
 type mailConfig struct {
 	exp time.Duration
@@ -56,6 +65,10 @@ func (app *application) mount() http.Handler {
 	r.Use(middleware.Logger)
 
 	r.Route("/v1", func(r chi.Router) {
+
+		r.With(app.BasicAuthMiddleware()).Get("/health", app.healthCheckHandler)
+
+
 		r.Get("/health", app.healthCheckHandler)
 
 		docsURL := fmt.Sprintf("%s/swagger/doc.json", app.config.addr)
