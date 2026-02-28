@@ -5,6 +5,7 @@ import (
 
 	"github.com/Harman6282/chat-app/db"
 	"github.com/Harman6282/chat-app/internal/user"
+	"github.com/Harman6282/chat-app/internal/ws"
 	"github.com/Harman6282/chat-app/router"
 )
 
@@ -20,8 +21,13 @@ func main() {
 	userSvc := user.NewService(userRepo)
 	userHandler := user.NewHandler(userSvc)
 
+	hub := ws.NewHub()
+	wsHandler := ws.NewHandler(hub)
 
-	router.InitRouter(userHandler)
+	go hub.Run()
+
+
+	router.InitRouter(userHandler, wsHandler)
 	router.Start(":8080")
 
 }
