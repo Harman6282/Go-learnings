@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  golang-app:
+    build: .
+    ports:
+      - "8080:8080"
+    networks:
+      - monitoring
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./:/etc/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring
+
+  grafana: 
+    image: grafana/grafana:latest
+    ports:
+      - 3000:3000
+    networks:
+        - monitoring
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+
+networks:
+  monitoring:
