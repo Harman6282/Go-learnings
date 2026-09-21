@@ -46,7 +46,7 @@ func TestMax(t *testing.T) {
 					"Max(%d, %d) = %d; want %d",
 					test.a,
 					test.b,
-					got,
+					got,	
 					test.want,
 				)
 			}

@@ -27,12 +27,14 @@ func handleWs(w http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 			return
 		}
-
+		var res string
 		fmt.Printf("Recieved Message: %s\n", data)
-
-		
-		
-		if err := conn.WriteMessage(messageType, data); err != nil {
+		if string(data) == "ping" {
+			res = "pong"
+		} else {
+			res = string(data)
+		}
+		if err := conn.WriteMessage(messageType, []byte(res)); err != nil {
 			log.Println(err)
 			return
 		}

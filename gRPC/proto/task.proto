@@ -1,36 +1,24 @@
 syntax = "proto3";
 
-package  task;
+option go_package = "grpc/basic";
 
-option go_package = "grpc-demo/pb";
+service TaskService {
+  rpc AddTask(AddTaskRequest) returns (AddTaskResponse) {}
+  rpc ListTask(ListTaskRequest) returns (stream ListTaskResponse) {}
+}
 
-message CreateTaskRequest {
+message AddTaskRequest {
   string title = 1;
   string description = 2;
 }
 
-message CreateTaskResponse {
-    string id = 1;
-    string title = 2;
-    string description = 3;
+message AddTaskResponse {
+  string res = 1;
 }
 
+message ListTaskRequest {}
 
-message ListTaksRequest {}
-
-message Task {
-    string id = 1;
-    string title = 2;
-    string description = 3;
-}
-
-// Service definition
-service TaskManager {
-    // unary: create single task
-  rpc CreateTask(CreateTaskRequest) returns (CreateTaskResponse);
-  
-  // server streaming: list all tasks as a stream
-  rpc ListTasks(ListTaksRequest) returns (stream Task);
-
-
+message ListTaskResponse {
+  string title = 1;
+  string description = 2;
 }
