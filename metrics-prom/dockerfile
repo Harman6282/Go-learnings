@@ -1,4 +1,5 @@
-FROM golang:1.27
+# build stage
+FROM golang:1.27-alpine AS builder
 
 WORKDIR /app
 
@@ -7,8 +8,16 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o app .
+RUN go build -o /app/main .
+
+# runtime stage
+
+FROM alpine:latest
+
+WORKDIR /app
+
+COPY --from=builder /app/main /app/main
 
 EXPOSE 8080
 
-CMD ["./app"]
+ENTRYPOINT ["/app/main"]
